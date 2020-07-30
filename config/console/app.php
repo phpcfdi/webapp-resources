@@ -15,7 +15,7 @@ return [
     * the same name.
     */
 
-    'id' => 'application-id-console',
+    'id' => 'webapp-resources-console',
 
     'basePath' => ConfigKit::config()->getBasePath(),
 
@@ -28,4 +28,16 @@ return [
     'bootstrap' => ['log'],
 
     'controllerNamespace' => 'app\commands',
+
+    'controllerMap' => [
+        'migrate' => [
+            'class' => \yii\console\controllers\MigrateController::class,
+            'migrationNamespaces' => [
+                'Da\User\Migration',
+            ],
+            'migrationPath' => [
+                '@app/migrations/2020'
+            ],
+        ],
+    ],
 ];
