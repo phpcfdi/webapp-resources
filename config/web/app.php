@@ -17,7 +17,7 @@ return [
 
     'id' => 'webapp-resources-web',
 
-    'name' => 'Webapp-resources',
+    'name' => 'phpCfdi - Recursos',
 
     'basePath' => ConfigKit::config()->getBasePath(),
 
@@ -30,7 +30,7 @@ return [
     'bootstrap' => ['log'],
 
     'controllerNamespace' => 'app\controllers\web',
-    
+
     //Site ofline only require to uncomment this key in the config array
     //'catchAll' => ['site/offline']
 ];
