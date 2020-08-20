@@ -112,7 +112,7 @@ Para futuras referencias, usar los siguientes enlaces:
 
 ## Aplicaciones del proyecto
 
-Se contemplan cinco aplicaciones para el proyecto:
+Se contemplan cuatro aplicaciones para el proyecto:
 
 1. WEB. La página WEB para usuarios **Invitados** con toda la información de los estados de las construcciones de los recursos. Un usuario registrado pasa a ser **Suscriptor** y puede administrar desde aquí su perfil y recibir notificaciones por correo de los cambios de estado en las construcciones de los recursos. Un **Suscriptor** puede ser elevado a **Suscriptor premium** para recibir también notificaciones por _webhooks_.
 2. Admin. El panel de los **Administradores**.
