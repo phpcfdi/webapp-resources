@@ -6,6 +6,7 @@ use app\models\ContactForm;
 use app\models\LoginForm;
 use Faker\Provider\File;
 use Yii;
+use yii\data\ArrayDataProvider;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
@@ -103,16 +104,61 @@ class SiteController extends Controller
     {
         $projectInfo = $this->findResource($project);
 
-        //.logs and .state
-        $projectFiles = FileHelper::findFiles(Yii::getAlias('@resources/') . $project . '/logs/', [
-            'except' => [
-                '.gitignore'
+        //.state files
+        $stateFiles = FileHelper::findFiles(Yii::getAlias('@resources/') . $project . '/logs/', [
+            'only' => [
+                '*.state'
+            ]
+        ]);
+
+        $statesList = [];
+
+        $i = 0;
+
+        foreach ($stateFiles as $directory) {
+            if (!$stateFile = Json::decode(file_get_contents($directory))) {
+                throw new \InvalidArgumentException(Yii::t('app', 'Verificar que se cuente con el archivo state.json'));
+            }
+
+            ArrayHelper::setValue($statesList, ['id' => $i], [
+                'date' => $stateFile['date'],
+                'state' => $stateFile['state'],
+                'project' => $project,
+            ]);
+
+            $i++;
+        }
+
+        $dataProvider = new ArrayDataProvider([
+            'allModels' => $statesList,
+            'sort' => [
+                'attributes' => ['date'],
+                'defaultOrder' => [
+                    'date' => SORT_ASC
+                ]
             ]
         ]);
 
         return $this->render('resource', [
             'projectInfo' => $projectInfo,
-            'projectFiles' => $projectFiles
+            'dataProvider' => $dataProvider
+        ]);
+    }
+
+    /**
+     * Render the specific log for any resource execution time.
+     * @param   string  $resource   Resource folder
+     * @param   int     $execution  UNIX Timestamp of the execution
+     * @return mixed
+     */
+    public function actionResourceLog(string $resource, int $execution)
+    {
+        $log = $this->findResourceLog($resource, $execution);
+        $state = $this->findResourceState($resource, $execution);
+
+        return $this->render('resource-log', [
+            'log' => $log,
+            'state' => $state
         ]);
     }
 
@@ -188,6 +234,40 @@ class SiteController extends Controller
     protected function findResource(string $project)
     {
         if (($resource = file_get_contents(Yii::getAlias('@resources/') . $project . '/state.json'))) {
+            return Json::decode($resource);
+        }
+
+        throw new NotFoundHttpException(Yii::t('app', 'La página que usted solicitó no existe'));
+    }
+
+    /**
+     * Finds the log of the executed file Ex. (xxxxx.log).
+     * If the file is not found, a 404 HTTP exception will be thrown.
+     * @param string $project Project name
+     * @param int $timestamp The timestamp of the execution.
+     * @return mixed the PHP Data
+     * @throws NotFoundHttpException if the file cannot be found
+     */
+    protected function findResourceLog(string $project, int $timestamp)
+    {
+        if (($resource = file_get_contents(Yii::getAlias('@resources/') . $project . '/logs/' . $timestamp . '.log'))) {
+            return $resource;
+        }
+
+        throw new NotFoundHttpException(Yii::t('app', 'La página que usted solicitó no existe'));
+    }
+
+    /**
+     * Finds the state of the executed file Ex. (xxxxx.log).
+     * If the file is not found, a 404 HTTP exception will be thrown.
+     * @param string $project Project name
+     * @param int $timestamp The timestamp of the execution.
+     * @return mixed the PHP Data
+     * @throws NotFoundHttpException if the file cannot be found
+     */
+    protected function findResourceState(string $project, int $timestamp)
+    {
+        if (($resource = file_get_contents(Yii::getAlias('@resources/') . $project . '/logs/' . $timestamp . '.state'))) {
             return Json::decode($resource);
         }
 
