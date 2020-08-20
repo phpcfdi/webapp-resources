@@ -234,11 +234,11 @@ class SiteController extends Controller
      */
     protected function findResource(string $project)
     {
-        if (($resource = file_get_contents(Yii::getAlias('@resources/') . $project . '/state.json'))) {
-            return Json::decode($resource);
+        if (($resource = @file_get_contents(Yii::getAlias('@resources/') . $project . '/state.json')) === false) {
+            throw new NotFoundHttpException(Yii::t('app', 'La página que usted solicitó no existe'));
         }
-
-        throw new NotFoundHttpException(Yii::t('app', 'La página que usted solicitó no existe'));
+        
+        return Json::decode($resource);
     }
 
     /**
@@ -251,7 +251,7 @@ class SiteController extends Controller
      */
     protected function findResourceLog(string $project, int $timestamp)
     {
-        if (!($resource = file_get_contents(Yii::getAlias('@resources/') . $project . '/logs/' . $timestamp . '.log'))) {
+        if (!($resource = @file_get_contents(Yii::getAlias('@resources/') . $project . '/logs/' . $timestamp . '.log'))) {
             throw new NotFoundHttpException(Yii::t('app', 'La página que usted solicitó no existe'));
         }
         
@@ -268,7 +268,7 @@ class SiteController extends Controller
      */
     protected function findResourceState(string $project, int $timestamp)
     {
-        if (!($resource = file_get_contents(Yii::getAlias('@resources/') . $project . '/logs/' . $timestamp . '.state'))) {
+        if (!($resource = @file_get_contents(Yii::getAlias('@resources/') . $project . '/logs/' . $timestamp . '.state'))) {
             throw new NotFoundHttpException(Yii::t('app', 'La página que usted solicitó no existe'));
         }
         
