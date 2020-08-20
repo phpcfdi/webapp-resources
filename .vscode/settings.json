@@ -1,0 +1,12 @@
+{
+    "gitflow4code.features": [
+        {
+            "name": "feature/testing",
+            "base": "develop"
+        },
+        {
+            "name": "feature/getting-resources",
+            "base": "develop"
+        }
+    ]
+}
