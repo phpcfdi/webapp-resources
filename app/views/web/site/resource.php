@@ -2,7 +2,7 @@
 
 /* @var $this yii\web\View */
 
-use kartik\grid\GridView;
+use yii\grid\GridView;
 use yii\helpers\Html;
 
 $this->title = Yii::t('app', 'Recurso') . ': ' . $projectInfo['project'];
@@ -20,7 +20,6 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= GridView::widget([
         'id' => 'builds-index',
         'dataProvider' => $dataProvider,
-        'responsiveWrap' => false,
         'layout' => '{items} {pager}',
         'columns' => [
             [
@@ -32,7 +31,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'label' => Yii::t('app', 'Estado')
             ],
             [
-                'class' => 'kartik\grid\ActionColumn',
+                'class' => 'yii\grid\ActionColumn',
                 'template' => '{view}',
                 'buttons' => [
                     'view' => function ($url, $model, $key) {
