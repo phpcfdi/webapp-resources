@@ -7,6 +7,10 @@
         {
             "name": "feature/getting-resources",
             "base": "develop"
+        },
+        {
+            "name": "feature/log-reader",
+            "base": "develop"
         }
     ]
 }
