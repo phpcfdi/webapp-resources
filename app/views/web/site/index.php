@@ -1,6 +1,7 @@
 <?php
 
 /* @var $this yii\web\View */
+/* @var $projectsList array */
 
 use yii\helpers\Html;
 
