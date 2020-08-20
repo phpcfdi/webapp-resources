@@ -97,8 +97,9 @@ class SiteController extends Controller
     }
 
     /**
-     * @param   string  $resource resource name
+     * @param string $project project name
      * @return mixed
+     * @throws NotFoundHttpException
      */
     public function actionResource(string $project)
     {
