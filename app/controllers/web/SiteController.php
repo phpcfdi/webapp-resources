@@ -75,7 +75,12 @@ class SiteController extends Controller
         $i = 0;
         // Showing state.json
         foreach ($resourcesDirectories as $key => $directory) {
-            $stateFile = Json::decode(file_get_contents($directory . "/state.json"));
+
+            if (!$stateFile = file_get_contents($directory . "/state.json")) {
+                throw new \InvalidArgumentException(Yii::t('app', 'Verificar que se cuente con el archivo state.json'));
+            }
+
+            $stateFile = Json::decode($stateFile);
 
             ArrayHelper::setValue($projectsList, ['id' => $i], [
                 'project' => $stateFile['project'],
