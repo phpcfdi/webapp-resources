@@ -4,6 +4,6 @@ use SideKit\Config\ConfigKit;
 
 return [
 
-    'basePath' => ConfigKit::config()->getRootPath() . '/public/assets',
+    'basePath' => ConfigKit::config()->getRootPath() . '/public_html/assets',
 
 ];

@@ -6,16 +6,16 @@ class ContactCest
 {
     public function _before(\AcceptanceTester $I)
     {
-        $I->amOnPage(Url::toRoute('/site/contact'));
+        $I->amOnPage('/site/contact');
     }
 
-    public function contactPageWorks(AcceptanceTester $I)
+    public function contactPageWorks(\AcceptanceTester $I)
     {
         $I->wantTo('ensure that contact page works');
-        $I->see('Contact', 'h1');
+        $I->see('Contacto', 'h1');
     }
 
-    public function contactFormCanBeSubmitted(AcceptanceTester $I)
+    /*public function contactFormCanBeSubmitted(AcceptanceTester $I)
     {
         $I->amGoingTo('submit contact form with correct data');
         $I->fillField('#contactform-name', 'tester');
@@ -30,5 +30,5 @@ class ContactCest
 
         $I->dontSeeElement('#contact-form');
         $I->see('Thank you for contacting us. We will respond to you as soon as possible.');
-    }
+    }*/
 }

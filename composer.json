@@ -55,11 +55,11 @@
             "php yii post-install/generate-cookie-validation"
         ],
         "start-test-server": [
-            "php -r \"file_exists('public/index-test.php') || copy('tests/_support/index-test.php', 'public/index-test.php');\"",
-            "php tests/bin/yii serve --docroot=@web"
+            "php -r \"file_exists('public_html/index-test.php') || copy('tests/_support/index-test.php', 'public_html/index-test.php');\"",
+            "php tests/bin/yii serve --docroot=@website"
         ],
         "stop-test-server": [
-            "php -r \"unlink('public/index-test.php');\"",
+            "php -r \"unlink('public_html/index-test.php');\"",
             "kill $(lsof -ti tcp:8080)"
         ],
         "start-server": [
