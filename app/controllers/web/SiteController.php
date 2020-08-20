@@ -259,7 +259,7 @@ class SiteController extends Controller
     }
 
     /**
-     * Finds the state of the executed file Ex. (xxxxx.log).
+     * Finds the state of the executed file Ex. (xxxxx.state).
      * If the file is not found, a 404 HTTP exception will be thrown.
      * @param string $project Project name
      * @param int $timestamp The timestamp of the execution.
