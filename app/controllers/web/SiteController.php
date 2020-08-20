@@ -68,14 +68,16 @@ class SiteController extends Controller
             'recursive' => false
         ]);
 
-        $projectsUpdated = [];
+        asort($resourcesDirectories);
+
+        $projectsList = [];
 
         $i = 0;
         // Showing state.json
         foreach ($resourcesDirectories as $key => $directory) {
             $stateFile = Json::decode(file_get_contents($directory . "/state.json"));
 
-            ArrayHelper::setValue($projectsUpdated, ['id' => $i], [
+            ArrayHelper::setValue($projectsList, ['id' => $i], [
                 'project' => $stateFile['project'],
                 'date' => $stateFile['date']
             ]);
@@ -84,7 +86,7 @@ class SiteController extends Controller
         }
 
         return $this->render('index', [
-            'projectsUpdated' => $projectsUpdated
+            'projectsList' => $projectsList
         ]);
     }
 

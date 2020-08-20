@@ -10,7 +10,7 @@ $this->title = Yii::$app->name;
     <h1>Recursos</h1>
 
     <ul>
-        <?php foreach ($projectsUpdated as $project) { ?>
+        <?php foreach ($projectsList as $project) { ?>
             <li>
                 <?= Html::a($project['project'], ['/site/resource', 'project' => $project['project']]) .
                     ' ' . Yii::t('app', 'Actualizado el: ')
