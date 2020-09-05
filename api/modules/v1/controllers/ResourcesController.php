@@ -1,70 +1,33 @@
 <?php
 
-namespace app\controllers\web;
+namespace api\modules\v1\controllers;
 
-use app\models\ContactForm;
-use app\models\LoginForm;
-use Faker\Provider\File;
 use Yii;
 use yii\data\ArrayDataProvider;
-use yii\filters\AccessControl;
-use yii\filters\VerbFilter;
 use yii\helpers\ArrayHelper;
 use yii\helpers\FileHelper;
 use yii\helpers\Json;
-use yii\web\Controller;
+use yii\rest\Controller;
 use yii\web\NotFoundHttpException;
 
-class SiteController extends Controller
+class ResourcesController extends Controller
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function behaviors()
+    public $enableCsrfValidation = false;
+
+    public function behaviors(): array
     {
-        return [
-            'access' => [
-                'class' => AccessControl::class,
-                'only' => ['logout'],
-                'rules' => [
-                    [
-                        'actions' => ['logout'],
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ],
-                ],
-            ],
-            'verbs' => [
-                'class' => VerbFilter::class,
-                'actions' => [
-                    'logout' => ['post'],
-                ],
-            ],
-        ];
+        $behaviors = parent::behaviors();
+
+        return $behaviors;
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function actions()
-    {
-        return [
-            'error' => [
-                'class' => 'yii\web\ErrorAction',
-            ],
-            'captcha' => [
-                'class' => 'yii\captcha\CaptchaAction',
-                'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
-            ],
-        ];
-    }
-
-    /**
-     * Displays homepage.
-     * @return string
+     * Show all the projects info
      */
     public function actionIndex()
     {
+        Yii::$app->response->format = 'json';
+
         $resourcesDirectories = FileHelper::findDirectories(Yii::getAlias('@resources'), [
             'recursive' => false
         ]);
@@ -91,18 +54,16 @@ class SiteController extends Controller
             $i++;
         }
 
-        return $this->render('index', [
-            'projectsList' => $projectsList
-        ]);
+        return $projectsList;
     }
 
     /**
-     * @param string $project project name
-     * @return mixed
-     * @throws NotFoundHttpException
+     * Show the info for only one project
      */
-    public function actionResource(string $project)
+    public function actionView(string $project)
     {
+        Yii::$app->response->format = 'json';
+
         $projectInfo = $this->findResource($project);
 
         //.state files
@@ -140,10 +101,7 @@ class SiteController extends Controller
             ]
         ]);
 
-        return $this->render('resource', [
-            'projectInfo' => $projectInfo,
-            'dataProvider' => $dataProvider
-        ]);
+        return ['project' => $projectInfo, 'builds' => $dataProvider];
     }
 
     /**
@@ -154,61 +112,16 @@ class SiteController extends Controller
      */
     public function actionResourceLog(string $resource, int $execution)
     {
+        Yii::$app->response->format = 'json';
+
         $log = $this->findResourceLog($resource, $execution);
         $state = $this->findResourceState($resource, $execution);
 
-        return $this->render('resource-log', [
+
+        return [
             'log' => $log,
             'state' => $state
-        ]);
-    }
-
-    /**
-     * Logout action.
-     *
-     * @return string
-     */
-    public function actionLogout()
-    {
-        Yii::$app->user->logout();
-
-        return $this->goHome();
-    }
-
-    /**
-     * Displays contact page.
-     *
-     * @return string
-     */
-    public function actionContact()
-    {
-        return $this->render('contact');
-    }
-
-    /**
-     * Displays about page.
-     *
-     * @return string
-     */
-    public function actionAbout()
-    {
-        return $this->render('about');
-    }
-
-    /**
-     * Finds the project file based on its project name (state.json).
-     * If the file is not found, a 404 HTTP exception will be thrown.
-     * @param string $project Project name
-     * @return mixed the PHP Data
-     * @throws NotFoundHttpException if the file cannot be found
-     */
-    protected function findResource(string $project)
-    {
-        if (($resource = @file_get_contents(Yii::getAlias('@resources/') . $project . '/state.json')) === false) {
-            throw new NotFoundHttpException(Yii::t('app', 'La página que usted solicitó no existe'));
-        }
-        
-        return Json::decode($resource);
+        ];
     }
 
     /**
@@ -224,7 +137,7 @@ class SiteController extends Controller
         if (!($resource = @file_get_contents(Yii::getAlias('@resources/') . $project . '/logs/' . $timestamp . '.log'))) {
             throw new NotFoundHttpException(Yii::t('app', 'La página que usted solicitó no existe'));
         }
-        
+
         return $resource;
     }
 
@@ -241,7 +154,23 @@ class SiteController extends Controller
         if (!($resource = @file_get_contents(Yii::getAlias('@resources/') . $project . '/logs/' . $timestamp . '.state'))) {
             throw new NotFoundHttpException(Yii::t('app', 'La página que usted solicitó no existe'));
         }
-        
+
+        return Json::decode($resource);
+    }
+
+    /**
+     * Finds the project file based on its project name (state.json).
+     * If the file is not found, a 404 HTTP exception will be thrown.
+     * @param string $project Project name
+     * @return mixed the PHP Data
+     * @throws NotFoundHttpException if the file cannot be found
+     */
+    protected function findResource(string $project)
+    {
+        if (($resource = @file_get_contents(Yii::getAlias('@resources/') . $project . '/state.json')) === false) {
+            throw new NotFoundHttpException(Yii::t('app', 'La página que usted solicitó no existe'));
+        }
+
         return Json::decode($resource);
     }
 }

@@ -10,9 +10,7 @@ class TestsController extends Controller
     public function behaviors(): array
     {
         $behaviors = parent::behaviors();
-        /*$behaviors['authenticator'] = [
-            'class' => HttpBearerAuth::class,
-        ];*/
+
         return $behaviors;
     }
 
@@ -27,13 +25,11 @@ class TestsController extends Controller
 
     /**
      * [actionOther description]
-     * @param   int     $id  [$id description]
-     * @return  string       [return description]
      */
-    public function actionOther(int $id): string
+    public function actionOther(): string
     {
         $attributes = \Yii::$app->request->get();
 
-        return 'Action Other !! - ' . $attributes['id'];
+        return "Another action !! - $attributes";
     }
 }

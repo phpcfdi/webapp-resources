@@ -9,10 +9,8 @@ return [
             'class' => 'yii\rest\UrlRule',
             'controller' => [
                 'v1/tests',
+                'v1/resources',
             ],
-            /*'extraPatterns' => [
-                'POST conversation' => 'create',
-            ]*/
         ]
     ]
 ];
