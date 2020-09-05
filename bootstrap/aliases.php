@@ -9,9 +9,8 @@ use SideKit\Config\ConfigKit;
  *
  * As we have changed the structure. Modify default Yii aliases here.
  */
-Yii::setAlias('@website', ConfigKit::config()->getBasePath() . DIRECTORY_SEPARATOR . '../public_html');
 
-Yii::setAlias('@admin', ConfigKit::config()->getBasePath() . DIRECTORY_SEPARATOR . '../admin');
+Yii::setAlias('@website', ConfigKit::config()->getBasePath() . DIRECTORY_SEPARATOR . '../public_html');
 
 Yii::setAlias('@api', ConfigKit::config()->getBasePath() . DIRECTORY_SEPARATOR . '../api');
 
@@ -21,6 +20,7 @@ Yii::setAlias('@resources', call_user_func(
         if (DIRECTORY_SEPARATOR === substr($envResources, 0, 1)) { // absolute path
             return $envResources;
         }
+
         // relative path
         return dirname(ConfigKit::config()->getBasePath()) . DIRECTORY_SEPARATOR . $envResources;
     }
