@@ -11,6 +11,10 @@ return [
                 'v1/tests',
                 'v1/resources',
             ],
+            'extraPatterns' => ['GET log' => 'log'],
+            'tokens' => [
+                '{id}' => '<id:\\w+>'
+            ]        
         ]
     ]
 ];

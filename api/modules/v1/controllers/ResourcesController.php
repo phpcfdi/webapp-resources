@@ -14,11 +14,35 @@ class ResourcesController extends Controller
 {
     public $enableCsrfValidation = false;
 
+    /**
+     * List of allowed domains.
+     * Note: Restriction works only for AJAX (using CORS, is not secure).
+     *
+     * @return array List of domains, that can access to this API
+     */
+    public static function allowedDomains()
+    {
+        return [
+            '*',                        // star allows all domains
+        ];
+    }
+
     public function behaviors(): array
     {
-        $behaviors = parent::behaviors();
+        return array_merge(parent::behaviors(), [
+            // For cross-domain AJAX request
+            'corsFilter'  => [
+                'class' => \yii\filters\Cors::class,
+                'cors'  => [
+                    // restrict access to domains:
+                    'Origin'                           => static::allowedDomains(),
+                    'Access-Control-Request-Method'    => ['POST'],
+                    'Access-Control-Allow-Credentials' => true,
+                    'Access-Control-Max-Age'           => 3600,                 // Cache (seconds)
+                ],
+            ],
 
-        return $behaviors;
+        ]);
     }
 
     /**
@@ -60,21 +84,27 @@ class ResourcesController extends Controller
     /**
      * Show the info for only one project
      */
-    public function actionView(string $project)
+    public function actionView()
     {
+        $params = Yii::$app->getRequest()->getBodyParams();
+
         Yii::$app->response->format = 'json';
 
-        $projectInfo = $this->findResource($project);
+        if (!isset($params['project'])) {
+            $this->setHeader(400);
+            return ['status' => 0, 'error_code' => 400, 'errors' => 'Parámetro requerido "project"'];
+        }
 
-        //.state files
-        $stateFiles = FileHelper::findFiles(Yii::getAlias('@resources/') . $project . '/logs/', [
+        $projectInfo = $this->findResource($params['project']);
+
+        // State files
+        $stateFiles = FileHelper::findFiles(Yii::getAlias('@resources/') . $params['project'] . '/logs/', [
             'only' => [
                 '*.state'
             ]
         ]);
 
         $statesList = [];
-
         $i = 0;
 
         foreach ($stateFiles as $directory) {
@@ -85,7 +115,7 @@ class ResourcesController extends Controller
             ArrayHelper::setValue($statesList, ['id' => $i], [
                 'date' => $stateFile['date'],
                 'state' => $stateFile['state'],
-                'project' => $project,
+                'project' => $params['project'],
             ]);
 
             $i++;
@@ -101,7 +131,7 @@ class ResourcesController extends Controller
             ]
         ]);
 
-        return ['project' => $projectInfo, 'builds' => $dataProvider];
+        return ['projectInfo' => $projectInfo, 'builds' => $dataProvider];
     }
 
     /**
@@ -110,13 +140,19 @@ class ResourcesController extends Controller
      * @param   int     $execution  UNIX Timestamp of the execution
      * @return mixed
      */
-    public function actionResourceLog(string $resource, int $execution)
+    public function actionLog()
     {
         Yii::$app->response->format = 'json';
 
-        $log = $this->findResourceLog($resource, $execution);
-        $state = $this->findResourceState($resource, $execution);
+        $params = Yii::$app->getRequest()->getBodyParams();
 
+        if ((!isset($params['resource'])) || (!isset($params['execution']))) {
+            $this->setHeader(400);
+            return ['status' => 0, 'error_code' => 400, 'errors' => 'Parámetros requeridos en req.body'];
+        }
+
+        $log = $this->findResourceLog($params['resource'], $params['execution']);
+        $state = $this->findResourceState($params['resource'], $params['execution']);
 
         return [
             'log' => $log,
@@ -172,5 +208,31 @@ class ResourcesController extends Controller
         }
 
         return Json::decode($resource);
+    }
+
+    private function setHeader($status)
+    {
+
+        $status_header = 'HTTP/1.1 ' . $status . ' ' . $this->_getStatusCodeMessage($status);
+        $content_type = "application/json; charset=utf-8";
+
+        header($status_header);
+        header('Content-type: ' . $content_type);
+        header('X-Powered-By: ' . "PHP CFDI <phpcfdi.com>");
+    }
+
+    private function _getStatusCodeMessage($status)
+    {
+        $codes = array(
+            200 => 'OK',
+            400 => 'Bad Request',
+            401 => 'Unauthorized',
+            402 => 'Payment Required',
+            403 => 'Forbidden',
+            404 => 'Not Found',
+            500 => 'Internal Server Error',
+            501 => 'Not Implemented',
+        );
+        return (isset($codes[$status])) ? $codes[$status] : '';
     }
 }

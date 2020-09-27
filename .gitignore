@@ -40,3 +40,5 @@ config/env/*/local/*.php
 
 # php cs fixer
 .php_cs.cache
+
+.vscode/*
