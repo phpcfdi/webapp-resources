@@ -17,13 +17,12 @@ class ResourcesController extends Controller
     /**
      * List of allowed domains.
      * Note: Restriction works only for AJAX (using CORS, is not secure).
-     *
      * @return array List of domains, that can access to this API
      */
     public static function allowedDomains()
     {
         return [
-            '*',                        // star allows all domains
+            '*',
         ];
     }
 
@@ -34,11 +33,10 @@ class ResourcesController extends Controller
             'corsFilter'  => [
                 'class' => \yii\filters\Cors::class,
                 'cors'  => [
-                    // restrict access to domains:
                     'Origin'                           => static::allowedDomains(),
                     'Access-Control-Request-Method'    => ['POST'],
                     'Access-Control-Allow-Credentials' => true,
-                    'Access-Control-Max-Age'           => 3600,                 // Cache (seconds)
+                    'Access-Control-Max-Age'           => 3600,
                 ],
             ],
 
@@ -62,8 +60,8 @@ class ResourcesController extends Controller
 
         $i = 0;
         // Showing state.json
-        foreach ($resourcesDirectories as $key => $directory) {
 
+        foreach ($resourcesDirectories as $key => $directory) {
             if (!$stateFile = file_get_contents($directory . "/state.json")) {
                 throw new \InvalidArgumentException(Yii::t('app', 'Verificar que se cuente con el archivo state.json'));
             }
@@ -210,7 +208,12 @@ class ResourcesController extends Controller
         return Json::decode($resource);
     }
 
-    private function setHeader($status)
+    /**
+     * Set the header of the request
+     * @param   int  $status An HTTP Status
+     * @return void
+     */
+    private function setHeader(int $status): void
     {
 
         $status_header = 'HTTP/1.1 ' . $status . ' ' . $this->_getStatusCodeMessage($status);
@@ -221,9 +224,14 @@ class ResourcesController extends Controller
         header('X-Powered-By: ' . "PHP CFDI <phpcfdi.com>");
     }
 
-    private function _getStatusCodeMessage($status)
+    /**
+     * Code Status Handler
+     * @param   int  $status HTTP Protocol, should be in the list
+     * @return  string The Response Code Message
+     */
+    private function _getStatusCodeMessage(int $status)
     {
-        $codes = array(
+        $codes = [
             200 => 'OK',
             400 => 'Bad Request',
             401 => 'Unauthorized',
@@ -232,7 +240,8 @@ class ResourcesController extends Controller
             404 => 'Not Found',
             500 => 'Internal Server Error',
             501 => 'Not Implemented',
-        );
+        ];
+
         return (isset($codes[$status])) ? $codes[$status] : '';
     }
 }
