@@ -34,12 +34,11 @@ class ResourcesController extends Controller
                 'class' => \yii\filters\Cors::class,
                 'cors'  => [
                     'Origin'                           => static::allowedDomains(),
-                    'Access-Control-Request-Method'    => ['POST'],
+                    'Access-Control-Request-Method'    => ['POST', 'GET'],
                     'Access-Control-Allow-Credentials' => true,
                     'Access-Control-Max-Age'           => 3600,
                 ],
             ],
-
         ]);
     }
 
