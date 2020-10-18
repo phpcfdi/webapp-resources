@@ -32,7 +32,7 @@ Crea una base de datos de MySQL.
 
 Realiza una copia del archivo `.env.example` localizado en la raíz del proyecto con el nombre de `.env` y configura las siguientes variables de acuerdo a tu entorno:
 
-```shell
+```bash
 DATABASE_DSN_BASE = "mysql:host=localhost;port=3306"
 DATABASE_DSN_DB = "yii2_app"
 DATABASE_USER = "root"
@@ -42,6 +42,14 @@ DATABASE_CHARSET = "utf8"
 ```
 
 Para configurar la base de datos para los test debes de editar las mismas variables pero en el archivo `.env.test`.
+
+### Dominios permitidos en la REST API
+
+Por defecto esta configuración marca `*` como los dominios permitidos para los CORS de la API REST, si se desean cambiar debe de cambiarse desde el archivo `.env` que nosotros acabamos de generar. Cada uno de éstos son separados por una coma, como en el siguiente ejemplo.
+
+```bash
+ALLOWED_DOMAINS = "https://www.dominio1.com, https://www.dominio2.com"
+```
 
 ### Correr migrates
 
