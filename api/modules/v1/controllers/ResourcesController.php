@@ -2,6 +2,7 @@
 
 namespace api\modules\v1\controllers;
 
+use SideKit\Config\ConfigKit;
 use Yii;
 use yii\data\ArrayDataProvider;
 use yii\helpers\ArrayHelper;
@@ -21,15 +22,22 @@ class ResourcesController extends Controller
      */
     public static function allowedDomains()
     {
-        return [
-            '*',
-        ];
+        $allowedDomains = explode(',', ConfigKit::env()->get('ALLOWED_DOMAINS'));
+
+        if (sizeof($allowedDomains) >= 1) {
+            return $allowedDomains;
+        }
+
+        return ['*'];
     }
 
-    public function behaviors(): array
+    /**
+     * The behaviors for the application
+     * @return  array
+     */
+    public function behaviors()
     {
-        return array_merge(parent::behaviors(), [
-            // For cross-domain AJAX request
+        return [
             'corsFilter'  => [
                 'class' => \yii\filters\Cors::class,
                 'cors'  => [
@@ -39,7 +47,7 @@ class ResourcesController extends Controller
                     'Access-Control-Max-Age'           => 3600,
                 ],
             ],
-        ]);
+        ];
     }
 
     /**

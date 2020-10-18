@@ -11,6 +11,10 @@
         {
             "name": "feature/log-reader",
             "base": "develop"
+        },
+        {
+            "name": "feature/#2",
+            "base": "develop"
         }
     ]
 }
