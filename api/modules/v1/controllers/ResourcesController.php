@@ -2,7 +2,7 @@
 
 namespace api\modules\v1\controllers;
 
-use SideKit\Config\ConfigKit;
+use Da\Config\Configuration;
 use Yii;
 use yii\data\ArrayDataProvider;
 use yii\helpers\ArrayHelper;
@@ -22,7 +22,7 @@ class ResourcesController extends Controller
      */
     public static function allowedDomains()
     {
-        $allowedDomains = explode(',', ConfigKit::env()->get('ALLOWED_DOMAINS'));
+        $allowedDomains = explode(',', Configuration::env()->get('ALLOWED_DOMAINS'));
 
         if (sizeof($allowedDomains) >= 1) {
             return $allowedDomains;

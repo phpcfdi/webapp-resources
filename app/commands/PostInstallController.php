@@ -2,7 +2,7 @@
 
 namespace app\commands;
 
-use SideKit\Config\ConfigKit;
+use Da\Config\Configuration;
 use Yii;
 use yii\console\Controller;
 
@@ -14,6 +14,6 @@ class PostInstallController extends Controller
     public function actionGenerateCookieValidation()
     {
         $key = Yii::$app->security->generateRandomString();
-        ConfigKit::env()->changeEnvironmentFile(['APP_COOKIE_VALIDATION_KEY' => $key]);
+        Configuration::env()->changeEnvironmentFile(['APP_COOKIE_VALIDATION_KEY' => $key]);
     }
 }

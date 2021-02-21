@@ -1,6 +1,6 @@
 <?php
 
-use SideKit\Config\ConfigKit;
+use Da\Config\Configuration;
 
 /*
  * --------------------------------------------------------------------------
@@ -10,18 +10,18 @@ use SideKit\Config\ConfigKit;
  * As we have changed the structure. Modify default Yii aliases here.
  */
 
-Yii::setAlias('@website', ConfigKit::config()->getBasePath() . DIRECTORY_SEPARATOR . '../public_html');
+Yii::setAlias('@website', Configuration::app()->getBasePath() . DIRECTORY_SEPARATOR . '../public_html');
 
-Yii::setAlias('@api', ConfigKit::config()->getBasePath() . DIRECTORY_SEPARATOR . '../api');
+Yii::setAlias('@api', Configuration::app()->getBasePath() . DIRECTORY_SEPARATOR . '../api');
 
 Yii::setAlias('@resources', call_user_func(
     function (): string {
-        $envResources = strval(ConfigKit::env()->get('DIR_PROJECTS')) ?: 'projects';
+        $envResources = strval(Configuration::env()->get('DIR_PROJECTS')) ?: 'projects';
         if (DIRECTORY_SEPARATOR === substr($envResources, 0, 1)) { // absolute path
             return $envResources;
         }
 
         // relative path
-        return dirname(ConfigKit::config()->getBasePath()) . DIRECTORY_SEPARATOR . $envResources;
+        return dirname(Configuration::app()->getBasePath()) . DIRECTORY_SEPARATOR . $envResources;
     }
 ));
